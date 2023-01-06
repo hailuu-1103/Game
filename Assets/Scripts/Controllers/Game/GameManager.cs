@@ -1,18 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using Controllers.Framework;
-using DefaultNamespace;
-using Models;
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
-using Utilities;
-
 namespace Controllers.Game
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Text;
+    using Controllers.Framework;
+    using DefaultNamespace;
+    using Models;
+    using UnityEngine;
+    using UnityEngine.UI;
+    using Utilities;
+
     public class GameManager : MonoBehaviour
     {
         private void Start()
@@ -28,61 +26,60 @@ namespace Controllers.Game
 
         #region Init, Config
 
-        [Header("UI Elements")] 
-        public List<Text> Texts = new List<Text>(); // Text fill in screen
-        public GameObject warningPopUp; // Pop up appears when user inputs word not in the list 
-        public float popUpTime = 2.0f; // Pop up time appears
-        public GameObject settingPanel; // Panel setting
-        public GameObject parentSpawn; // Use to spawn column child
-        public GameObject column4CTilesPrefab; // Column to generate tiles 
-        public GameObject column5CTilesPrefab; // Column to generate tiles 
-        public GameObject column6CTilesPrefab; // Column to generate tiles 
-        public GameObject column7CTilesPrefab; // Column to generate tiles 
-        public GameObject btn4letters; // User choose 4 letters per word to play
-        public GameObject btn5letters; // User choose 5 letters per word to play
-        public GameObject btn6letters; // User choose 6 letters per word to play
-        public GameObject btn7letters; // User choose 7 letters per word to play
-        public Sprite btOnSwitch; // On Switch image
-        public Sprite btOffSwitch; // Off Switch image
-        public GameObject tutorialImg; // Show when user wants to see tutorial
-        public GameObject txtLetters;
-        public GameObject txtLanguage;
-        public GameObject txtDarkMode;
-        public GameObject txtColorBlindMode;
-        public GameObject txtTutorial;
-        public GameObject txtShop;
-        public GameObject txtRestorePurchase;
-        public GameObject txtSocial;
-        
-        private GameObject _spawnObj; // Use to swap tile
-        private GameObject _previousTiles; // Previous column object
-        private readonly Words _words = new Words(); // List of words
-        private readonly Utility _utility = new Utility();
-        private readonly CertainWord _certainWord = new CertainWord(); // Each word
-        private WordState[] _states; // State of each character
-        private WordData _wordData = new WordData(); // Dictionary of word
-        private UserData _userData = new UserData();
-        private StringBuilder _keyboard = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); // All character of keyboard
-        private readonly string _initialFilePath = "5lettersToJson.json"; // File path to read initially
-        private int _numberOfInputs; // Times of character user input
-        private int _numberOfWords; // Number of words user input
-        private int _targetLetters = 5; // Number of letters in each word user has to guess
-        
-        private bool _isEntered; // Is user press on Enter?
-        private bool _isInDictionary; // Is that word in Dictionary?
-        private bool _isHided; // Is user click to generate new tiles?
-        private bool _isDarkMode; // Is user use dark mode?
-        private bool _isColorBlindMode; // Is user use color blind mode?
+        [Header("UI Elements")] public List<Text> Texts = new List<Text>(); // Text fill in screen
+        public                         GameObject warningPopUp; // Pop up appears when user inputs word not in the list 
+        public                         float      popUpTime = 2.0f; // Pop up time appears
+        public                         GameObject settingPanel; // Panel setting
+        public                         GameObject parentSpawn; // Use to spawn column child
+        public                         GameObject column4CTilesPrefab; // Column to generate tiles 
+        public                         GameObject column5CTilesPrefab; // Column to generate tiles 
+        public                         GameObject column6CTilesPrefab; // Column to generate tiles 
+        public                         GameObject column7CTilesPrefab; // Column to generate tiles 
+        public                         GameObject btn4letters; // User choose 4 letters per word to play
+        public                         GameObject btn5letters; // User choose 5 letters per word to play
+        public                         GameObject btn6letters; // User choose 6 letters per word to play
+        public                         GameObject btn7letters; // User choose 7 letters per word to play
+        public                         Sprite     btOnSwitch; // On Switch image
+        public                         Sprite     btOffSwitch; // Off Switch image
+        public                         GameObject tutorialImg; // Show when user wants to see tutorial
+        public                         GameObject txtLetters;
+        public                         GameObject txtLanguage;
+        public                         GameObject txtDarkMode;
+        public                         GameObject txtColorBlindMode;
+        public                         GameObject txtTutorial;
+        public                         GameObject txtShop;
+        public                         GameObject txtRestorePurchase;
+        public                         GameObject txtSocial;
+
+        private          GameObject    _spawnObj; // Use to swap tile
+        private          GameObject    _previousTiles; // Previous column object
+        private List<string>         _words       = new(); // List of words
+        private readonly Utility       _utility     = new Utility();
+        private          string        _certainWord = ""; // Each word
+        private          WordState[]   _states; // State of each character
+        private          WordData      _wordData        = new WordData(); // Dictionary of word
+        private          UserData      _userData        = new UserData();
+        private          StringBuilder _keyboard        = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ"); // All character of keyboard
+        private readonly string        _initialFilePath = "5lettersToJson.json"; // File path to read initially
+        private          int           _numberOfInputs; // Times of character user input
+        private          int           _numberOfWords; // Number of words user input
+        private          int           _targetLetters = 5; // Number of letters in each word user has to guess
+
+        private bool   _isEntered; // Is user press on Enter?
+        private bool   _isInDictionary; // Is that word in Dictionary?
+        private bool   _isHided; // Is user click to generate new tiles?
+        private bool   _isDarkMode; // Is user use dark mode?
+        private bool   _isColorBlindMode; // Is user use color blind mode?
         private string _targetWord; // A Word that user has to guess
-        
+
         private const int NUMBER_OF_ROWS = 6; // Six words to guess
-        
+
         #endregion
 
         #region Singleton
 
-        private static GameManager _uniqueInstance;
-        private static readonly object LockObject = new object();
+        private static          GameManager _uniqueInstance;
+        private static readonly object      LockObject = new object();
 
         public static GameManager Instance
         {
@@ -97,7 +94,7 @@ namespace Controllers.Game
                         {
                             // create new GameObject, and add GameManager component
                             var singletonObject = new GameObject();
-                            _uniqueInstance = singletonObject.AddComponent<GameManager>();
+                            _uniqueInstance      = singletonObject.AddComponent<GameManager>();
                             singletonObject.name = "Singleton - GameManager";
                         }
                     }
@@ -125,29 +122,31 @@ namespace Controllers.Game
         #region Event Callback
 
         #region Game Play
+
         /* Events in Game Play */
-        
+
         /// <summary>
         ///     User input character
         /// </summary>
         /// <param name="t">Transform of button</param>
         public void OnInputCharacterButton(Transform t)
         {
+            SoundManager.Instance.PlaySfxSound("button_click");
             if (_numberOfInputs == 0 || _numberOfInputs % _targetLetters != 0 || _isEntered)
             {
-                Texts[_numberOfInputs].text = t.name; // Fill Text
-                _numberOfInputs += 1;
-                _certainWord.AddCharacterToWord(t.name);
-                if (_certainWord.Word.Length == _targetLetters) // If word receive enough characters
+                Texts[_numberOfInputs].text =  t.name; // Fill Text
+                _numberOfInputs             += 1;
+                _certainWord                += t.name;
+                if (_certainWord.Length == _targetLetters) // If word receive enough characters
                 {
-                    if (_utility.IsWordInDictionary(_certainWord.Word, _wordData))
+                    if (_utility.IsWordInDictionary(_certainWord, _wordData))
                     {
                         _isInDictionary = true;
-                        var tempWord = new CertainWord();
-                        tempWord.Word = _certainWord.Word;
-                        _words.AddWordToList(tempWord);
-                        _numberOfWords += 1;
-                        _certainWord.Word = ""; // re-init word
+                        var tempWord = "";
+                        tempWord = _certainWord;
+                        _words.Add(tempWord);
+                        _numberOfWords    += 1;
+                        _certainWord =  ""; // re-init word
                     }
                     else
                     {
@@ -156,7 +155,7 @@ namespace Controllers.Game
                 }
             }
         }
-        
+
         /// <summary>
         ///     BUG
         /// </summary>
@@ -168,6 +167,11 @@ namespace Controllers.Game
                 FillStateToWord();
                 FillColorToWord();
                 FillColorToKeyboard();
+                if (this.CheckWinGame())
+                {
+                    SoundManager.Instance.PlaySfxSound("correct_word");
+                }
+
                 _states = new WordState[_targetLetters]; // re-init States
             }
             else
@@ -177,39 +181,33 @@ namespace Controllers.Game
                 StartCoroutine(WaitThenRestoreTime());
             }
         }
-        
+
         public void OnBackspaceButton()
         {
             if (!_isEntered) // If user don't submit the word yet
             {
-                _certainWord.Word = _certainWord.RemoveCharacterFromWord();
-                _numberOfInputs -= 1;
-                Texts[_numberOfInputs].text = ""; // Set blank text
+                _certainWord                =  _certainWord.Length > 0 ? this._certainWord.Remove(this._certainWord.Length - 1) : null;
+                _numberOfInputs             -= 1;
+                Texts[_numberOfInputs].text =  ""; // Set blank text
             }
         }
-        
+
         public void OnSettingButton()
         {
             FillColorToSelectedLetterButton();
             EnableSettingPanel();
         }
-        
+
         #endregion
 
         #region Settings
 
         /* Events in Settings */
-        
-        public void OnExitSettingButton()
-        {
-            DisablePanels();
-        }
 
-        public void OnExitTutorialButton()
-        {
-            DisableTutorial();
-        }
-        
+        public void OnExitSettingButton() { DisablePanels(); }
+
+        public void OnExitTutorialButton() { DisableTutorial(); }
+
         /// <summary>
         ///     User select letters to play
         ///     Exp: Select 4 -> generate 4 letters game play
@@ -219,8 +217,8 @@ namespace Controllers.Game
         {
             ClearAllKeyboardColor();
             _numberOfWords = 0;
-            Texts = new List<Text>(); // Re-init text to fill
-            _isHided = !_isHided;
+            Texts          = new List<Text>(); // Re-init text to fill
+            _isHided       = !_isHided;
             if (_isHided)
             {
                 InitializeObjects(t);
@@ -232,7 +230,7 @@ namespace Controllers.Game
                 Common.Log(_targetWord);
             }
         }
-        
+
         public void OnDarkMode(Transform t)
         {
             _isDarkMode = !_isDarkMode;
@@ -251,23 +249,18 @@ namespace Controllers.Game
             ChangeSwitchSprite(t, _isDarkMode);
         }
 
-        
-
         public void OnColorBlindMode(Transform t)
         {
             _isColorBlindMode = !_isColorBlindMode;
             ChangeSwitchSprite(t, _isColorBlindMode);
         }
 
-        public void OnTutorialClick()
-        {
-            EnableTutorial();
-        }
-        
+        public void OnTutorialClick() { EnableTutorial(); }
+
         #endregion
-        
+
         #endregion
-        
+
         #region GERERATE TILE
 
         /// <summary>
@@ -281,14 +274,17 @@ namespace Controllers.Game
             {
                 return SpawnColumn(numberOfLetters, column4CTilesPrefab);
             }
+
             if (numberOfLetters == 5)
             {
                 return SpawnColumn(numberOfLetters, column5CTilesPrefab);
             }
+
             if (numberOfLetters == 6)
             {
                 return SpawnColumn(numberOfLetters, column6CTilesPrefab);
             }
+
             if (numberOfLetters == 7)
             {
                 return SpawnColumn(numberOfLetters, column7CTilesPrefab);
@@ -296,7 +292,7 @@ namespace Controllers.Game
 
             return null;
         }
-        
+
         /// <summary>
         /// Spawn 6 rows of column and control its Text 
         /// </summary>
@@ -305,7 +301,7 @@ namespace Controllers.Game
         /// <returns>Column object</returns>
         private GameObject SpawnColumn(int numberOfLetters, GameObject prefab)
         {
-            _spawnObj = Instantiate(prefab, parentSpawn.transform, false);
+            _spawnObj      = Instantiate(prefab, parentSpawn.transform, false);
             _spawnObj.name = "Column";
             for (int i = 1; i <= NUMBER_OF_ROWS; i++)
             {
@@ -320,16 +316,16 @@ namespace Controllers.Game
         }
 
         #endregion
-        
+
         #region UI
 
-        private static readonly Color ON_DARK_MODE_TEXT = new Color(215, 215, 217, 255);
+        private static readonly Color ON_DARK_MODE_TEXT  = new Color(215, 215, 217, 255);
         private static readonly Color OFF_DARK_MODE_TEXT = Color.black;
-        private static readonly Color GREEN_COLOR = Color.green; // set to correct position found character
-        private static readonly Color YELLOW_COLOR = Color.yellow; // set to incorrect position found character
-        private static readonly Color GRAY_COLOR = Color.gray; // set to not found character
-        private static readonly Color WHITE_COLOR = Color.white; // set to unused character
-        
+        private static readonly Color GREEN_COLOR        = Color.green; // set to correct position found character
+        private static readonly Color YELLOW_COLOR       = Color.yellow; // set to incorrect position found character
+        private static readonly Color GRAY_COLOR         = Color.gray; // set to not found character
+        private static readonly Color WHITE_COLOR        = Color.white; // set to unused character
+
         /// <summary>
         /// Change text corresponding to dark mode selected
         /// </summary>
@@ -360,12 +356,13 @@ namespace Controllers.Game
                 textToChange.color = OFF_DARK_MODE_TEXT;
             }
         }
+
         /// <summary>
         ///     Fill state to input word
         /// </summary>
         private void FillStateToWord()
         {
-            var inputWord = _words.WordList[_words.WordList.Count - 1].Word;
+            var inputWord = _words[^1];
             _states = _utility.AddStateToWord(inputWord, _targetWord, _targetLetters);
         }
 
@@ -377,7 +374,7 @@ namespace Controllers.Game
             var length = _states.Length;
             for (var i = 0; i < length; i++)
             {
-                var middleObj = GameObject.Find("Text" + _numberOfWords + (i + 1)); // Text Fill in the middle screen
+                var middleObj    = GameObject.Find("Text" + _numberOfWords + (i + 1)); // Text Fill in the middle screen
                 var btnMiddleObj = middleObj.transform.parent.gameObject; // Button Object
                 FillColorByState(i, btnMiddleObj);
             }
@@ -401,7 +398,7 @@ namespace Controllers.Game
             else
                 btnMiddleObj.GetComponent<Image>().color = GRAY_COLOR;
         }
-        
+
         /// <summary>
         /// Fill green color to selected letter button
         /// Fill white color to unselected letter button
@@ -452,13 +449,12 @@ namespace Controllers.Game
             var listOfInputCharacter = GetInputCharacter();
             for (var i = 0; i < listOfInputCharacter.Count; i++)
             {
-                var bottomObj = GameObject.Find(listOfInputCharacter[i] + "txt");
+                var bottomObj    = GameObject.Find(listOfInputCharacter[i] + "txt");
                 var btnBottomObj = bottomObj.transform.parent.gameObject;
                 FillColorByState(i, btnBottomObj);
             }
         }
 
-        
         /// <summary>
         /// Change sprite of toggle
         /// </summary>
@@ -475,7 +471,7 @@ namespace Controllers.Game
                 t.transform.gameObject.GetComponent<Image>().sprite = btOffSwitch;
             }
         }
-        
+
         /// <summary>
         ///     Get word base on input characters
         /// </summary>
@@ -484,7 +480,7 @@ namespace Controllers.Game
         {
             var list = new List<string>();
             for (var i = 0; i < _targetLetters; i++)
-                list.Add(_words.WordList[_words.WordList.Count - 1].Word[i].ToString());
+                list.Add(_words[^1][i].ToString());
             return list;
         }
 
@@ -494,30 +490,14 @@ namespace Controllers.Game
             tutorialImg.SetActive(false);
         }
 
-        private void EnableSettingPanel()
-        {
-            settingPanel.SetActive(true);
-        }
+        private void EnableSettingPanel() { settingPanel.SetActive(true); }
 
-        private void DisablePopUp()
-        {
-            warningPopUp.SetActive(false);
-        }
+        private void DisablePopUp() { warningPopUp.SetActive(false); }
 
-        private void EnablePopup()
-        {
-            warningPopUp.SetActive(true);
-        }
+        private void EnablePopup() { warningPopUp.SetActive(true); }
 
-        private void DisableTutorial()
-        {
-            tutorialImg.SetActive(false);
-        }
-        private void EnableTutorial()
-        {
-            tutorialImg.SetActive(true);
-        }
-
+        private void DisableTutorial() { tutorialImg.SetActive(false); }
+        private void EnableTutorial()  { tutorialImg.SetActive(true); }
 
         private IEnumerator WaitThenRestoreTime()
         {
@@ -530,6 +510,7 @@ namespace Controllers.Game
         #region RE-INIT
 
         private const string FILE_POSTFIX = "lettersToJson.json";
+
         /// <summary>
         /// Clear all keyboard color
         /// </summary>
@@ -552,16 +533,17 @@ namespace Controllers.Game
         {
             _spawnObj.SetActive(false); // Hide previous tiles
             var filePrefix = t.GetChild(0).gameObject.GetComponent<Text>().text; // Get number of letters
-            _targetLetters = Int32.Parse(filePrefix); // Reset target letters of each word
-            _wordData = _utility.ReadWord(filePrefix + FILE_POSTFIX); // Initialize corresponding dictionary 
-            _words.WordList = new List<CertainWord>(); // Re-init list
+            _targetLetters  = Int32.Parse(filePrefix); // Reset target letters of each word
+            _wordData       = _utility.ReadWord(filePrefix + FILE_POSTFIX); // Initialize corresponding dictionary 
+            _words = new (); // Re-init list
             _numberOfInputs = 0; // Re-init input click
             _utility.GetRandomWordInDictionary(ref _targetWord, _wordData);
             _previousTiles = GenerateTiles(_targetLetters);
             DisablePanels();
         }
+
         #endregion
-        
+
         #region WIN GAME & LOSE GAME
 
         /// <summary>
@@ -570,29 +552,33 @@ namespace Controllers.Game
         ///     Input: từ user nhập (đã lưu trong WordList)
         ///     -> Output: UI Win Game, gồm có: Replay button, Text win game
         /// </summary>
-        private void WinGame()
+        private bool CheckWinGame()
         {
+            var result = true;
+            foreach (var wordState in this._states)
+            {
+                if (wordState != WordState.CORRECTPOSITIONFOUND)
+                {
+                    result = false;
+                }
+            }
+
+            return result;
         }
 
-        private void LoseGame()
-        {
-        }
+        private void LoseGame() { }
 
         /// <summary>
         ///     Khi user nhấn vào setting, tắt setting sẽ quay lại trạng thái chơi
         ///     Sau khi user mở lại trò chơi, sẽ có UI hiện lên và hỏi user có muốn quay lại scene đang chơi không?
         ///     Nếu có thì sẽ load lại trạng thái cuối cùng, không thì sẽ reset scence và chơi lại
         /// </summary>
-        private void OnResumeButton()
-        {
-        }
+        private void OnResumeButton() { }
 
         /// <summary>
         ///     Khi user nhấn vào button -> hiển thị Confirm UI. Đồng ý thì sẽ load lại scene, không thì tắt UI
         /// </summary>
-        private void OnReplayButton()
-        {
-        }
+        private void OnReplayButton() { }
 
         #endregion
     }
