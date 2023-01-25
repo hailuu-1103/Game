@@ -31,9 +31,6 @@ namespace Controllers.Game
                     this.sfxAudioSource.Play();
                     break;
             }
-           
         }
-
-        
     }
 }

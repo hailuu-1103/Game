@@ -1,18 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Controllers.Framework;
-using DefaultNamespace;
-using Models;
-using Newtonsoft.Json;
-using UnityEngine;
-using Random = System.Random;
-
 namespace Utilities
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using Models;
+    using Newtonsoft.Json;
+    using UnityEngine;
+    using Random = System.Random;
+
     [Serializable]
-    public class Utility
+    public static class Utility
     {
         #region STRING HANDLING
 
@@ -23,7 +20,7 @@ namespace Utilities
         /// <param name="inputWord">Word that user input</param>
         /// <param name="targetWord">Word in Dictionary</param>
         /// <param name="targetLetters">Number of letters of each word</param>
-        public WordState[] AddStateToWord(string inputWord, string targetWord, int targetLetters)
+        public static WordState[] AddStateToWord(string inputWord, string targetWord, int targetLetters)
         {
             var states = new WordState[targetLetters];
             inputWord = inputWord.ToLower();
@@ -32,9 +29,9 @@ namespace Utilities
                 if (targetWord.Contains(inputWord[i]))
                 {
                     if (inputWord[i] == targetWord[i])
-                        states[i] = WordState.CORRECTPOSITIONFOUND;
+                        states[i] = WordState.CorrectPositionFound;
                     else
-                        states[i] = WordState.INCORRECTPOSITIONFOUND;
+                        states[i] = WordState.IncorrectPositionFound;
                 }
 
             return states;
@@ -48,15 +45,13 @@ namespace Utilities
         ///     Get random word in dictionary
         /// </summary>
         /// <returns>Word in dictionary</returns>
-        public void GetRandomWordInDictionary(ref string word, WordData wordData)
+        public static void GetRandomWordInDictionary(ref string word, WordData wordData)
         {
             wordData.WordList = wordData.WordList.ConvertAll(d => d.ToLower()); // Convert all word to lowercase
             var length = wordData.WordList.Count;
-            if (length > 0)
-            {
-                var random = new Random();
-                word = wordData.WordList[random.Next(length)];
-            }
+            if (length <= 0) return;
+            var random = new Random();
+            word = wordData.WordList[random.Next(length)];
         }
 
         /// <summary>
@@ -65,12 +60,11 @@ namespace Utilities
         /// <param name="inputWord">Word that user input</param>
         /// <param name="data">List of word</param>
         /// <returns>true if word exist in dictionary, false otherwise</returns>
-        public bool IsWordInDictionary(string inputWord, WordData data)
+        public static bool IsWordInDictionary(string inputWord, WordData data)
         {
             var list = data.WordList;
             list = list.ConvertAll(d => d.ToLower()); // Convert all word to lowercase
-            if (list.Contains(inputWord.ToLower())) return true;
-            return false;
+            return list.Contains(inputWord.ToLower());
         }
 
         #endregion
@@ -81,7 +75,7 @@ namespace Utilities
         ///     Read file and parse to object
         /// </summary>
         /// <param name="filePath">File path by string</param>
-        public WordData ReadWord(string filePath)
+        public static WordData LoadWord(string filePath)
         {
             var path = Application.dataPath + "/Resources/" + filePath;
             if (File.Exists(path))
@@ -100,7 +94,7 @@ namespace Utilities
         /// </summary>
         /// <param name="filePath">File path by string</param>
         /// <returns>Object store data</returns>
-        public WordData LoadWord(string filePath, int type)
+        public static WordData LoadWord(string filePath, int type)
         {
             var wordData = new WordData();
             var path = Application.dataPath + "/Resources/" + filePath;
@@ -122,7 +116,7 @@ namespace Utilities
         /// </summary>
         /// <param name="wordData">Object store data</param>
         /// <param name="filePath">Name of the JSON file</param>
-        public void ConvertToJson(WordData wordData, string filePath)
+        public static void ConvertToJson(WordData wordData, string filePath)
         {
             var setting = new JsonSerializerSettings();
             setting.Formatting = Formatting.Indented;
@@ -132,7 +126,7 @@ namespace Utilities
             var path = Path.Combine(Application.dataPath + "/Resources/", filePath);
             File.WriteAllText(path, json);
         }
-
+        
         #endregion
     }
 }
