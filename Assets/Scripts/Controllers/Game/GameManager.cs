@@ -51,6 +51,7 @@ namespace Controllers.Game
         public GameObject txtShop;
         public GameObject txtRestorePurchase;
         public GameObject txtSocial;
+        public GameObject volumePanel; // setting volume
 
         private          GameObject    spawnObj; // Use to swap tile
         private          GameObject    previousTiles; // Previous column object
@@ -197,6 +198,7 @@ namespace Controllers.Game
         public void OnExitSettingButton() { this.DisablePanels(); }
 
         public void OnExitTutorialButton() { this.DisableTutorial(); }
+        public void OnExitVolumeSetting() { this.DisableVolumePanel(); }
 
         /// <summary>
         ///     User select letters to play
@@ -246,6 +248,7 @@ namespace Controllers.Game
         }
 
         public void OnTutorialClick() { this.EnableTutorial(); }
+        public void OnSoundClick() { this.EnableVolumePanel(); }
 
         #endregion
 
@@ -478,6 +481,7 @@ namespace Controllers.Game
         {
             this.settingPanel.SetActive(false);
             this.tutorialImg.SetActive(false);
+            this.volumePanel.SetActive(false);
         }
 
         private void EnableSettingPanel() { this.settingPanel.SetActive(true); }
@@ -488,6 +492,10 @@ namespace Controllers.Game
 
         private void DisableTutorial() { this.tutorialImg.SetActive(false); }
         private void EnableTutorial()  { this.tutorialImg.SetActive(true); }
+
+        private void EnableVolumePanel() { this.volumePanel.SetActive(true); }
+
+        private void DisableVolumePanel() { this.volumePanel.SetActive(false); }
 
         private IEnumerator WaitThenRestoreTime()
         {
