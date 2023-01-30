@@ -107,6 +107,10 @@ namespace Controllers.Game
         {
             this.spawnObj = this.GenerateTiles(5); // Generate 5 letters of each word initially
             this.wordData = Utility.LoadWord(InitialFilePath);
+
+            var wordDataTxt = new WordData();
+            wordDataTxt = Utility.LoadWord("4letters.txt", 2);
+            Debug.Log($"First 4 letter word: {wordDataTxt.WordList[0]}");
             // Check if there's another instance already exist in scene
 
             if (uniqueInstance != null && uniqueInstance.GetInstanceID() != this.GetInstanceID())
